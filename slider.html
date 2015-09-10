@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>jQuery UI Slider X Coordinate Generator</title>
+  <!-- include the jQuery and jQuery UI scripts -->
+  <script src="https://code.jquery.com/jquery-2.1.1.js"></script>
+  <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+  <!-- plus a jQuery UI theme, here I use "flick" -->
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/flick/jquery-ui.css">
+  
+<script>
+    $(function() {
+      $( "#slider-range-max" ).slider({
+        range: "max",
+        min:  0,
+        max:  10,
+        step: 0.1,
+	    value:0,
+        slide: function( event, ui ) {
+          $( "#amount" ).val( ui.value );
+        },
+	    change: function(event, ui) {
+	    //console.info("console message");
+	    coordinate();
+	   },
+    });
+	
+    function coordinate() {
+      localStorage['x-coordinate'] = $('#slider-range-max').slider("option", "value");
+      //alert(localStorage['x-coordinate']);
+	  postCoordinate(localStorage['x-coordinate']);
+    }
+   
+    //y coordinate is a random number between 1 and 100
+    function postCoordinate(coordinate) {
+      var formData = {x:coordinate, y: Math.floor((Math.random() * 100) + 1) };
+	    $.ajax({
+	      cache: false,
+          url : "http://127.0.0.1:4567/session",
+          type: "POST",
+	      data:  formData,	
+        });
+    }
+  });
+</script>
+</head>
+<body> 
+  <p style="text-align:center;margin-top:50px;font-weight:bold; font-size:160%;">
+    <label for="amount">X coordinate value :</label>
+  </p>
+  <p style="text-align:center;margin-top:50px">
+    <input type="text" id="amount" readonly style=" text-align:center;color:#f6931f; font-weight:bold; font-size:180%;">
+  </p>
+  <div id="slider-range-max" style="margin:50px;"></div>
+</body>
+</html>
